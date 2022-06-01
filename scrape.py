@@ -7,11 +7,11 @@
 #--------------------
 from main import main
 from multiprocessing import Process
-url="http://ihadis.com/books/bukhari/hadis"
+url="http://ihadis.com/books/muslim/hadis"
 start=1
-end=7275
+end=7500
 save_path="../../"
-iden="bukhari"
+iden="muslim"
 batch=500
 #--------------------
 # main

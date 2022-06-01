@@ -71,3 +71,10 @@ Gnome       : 3.36.8
     * end=7275
     * save_path="../../"
     * iden="bukhari"
+* muslim example:
+    * url="http://ihadis.com/books/muslim/hadis"
+    * start=1
+    * end=7500
+    * save_path="../../"
+    * iden="muslim"
+* run: ```python scrape.py```
