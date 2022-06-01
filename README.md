@@ -61,3 +61,13 @@ Gnome       : 3.36.8
 # TODO
 - [x] multiprocessing
 - [ ] regex and line sep division
+
+# Execution:
+* edit **scrape.py**
+
+* bukhari example:
+    * url="http://ihadis.com/books/bukhari/hadis"
+    * start=1
+    * end=7275
+    * save_path="../../"
+    * iden="bukhari"
