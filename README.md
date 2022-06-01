@@ -59,5 +59,5 @@ Gnome       : 3.36.8
 * killing chrome headless: ```pkill -f "(chrome)?(--headless)"```
 
 # TODO
-- [ ] multiprocessing
+- [x] multiprocessing
 - [ ] regex and line sep division
