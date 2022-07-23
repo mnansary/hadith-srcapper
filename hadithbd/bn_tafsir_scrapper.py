@@ -3,7 +3,6 @@
 #------------------------------
 import pandas as pd
 import os
-import selenium
 from selenium import webdriver
 from time import sleep
 import requests
@@ -14,6 +13,7 @@ import random
 from time import sleep
 from selenium.webdriver.chrome.options import Options
 from tqdm.auto import tqdm
+from multiprocessing import Process
 #------------------------------
 # helpers
 #------------------------------
@@ -63,6 +63,12 @@ TEXTS=[]
 TZ=[]
 TB=[]
 TR=[]
+
+batch=10 # how many surah's to download at once
+
+save_dir="/home/ansary/WORK/Research/hadithbd/"
+log_txt ="/home/ansary/WORK/Research/hadithbd/log.txt"
+
 #----------------------------
 # windows
 #----------------------------
@@ -79,8 +85,6 @@ options.add_argument("--disable-infobars")
 options.add_argument("--mute-audio")
 options.add_argument("--headless")
 
-#Install Driver
-driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
 #----------------------------
 # main page saving function
 #----------------------------
@@ -133,40 +137,63 @@ def save_data(driver,spath):
         xlp_elems=xl_elem.find_elements_by_xpath("p")
         xld=""
         for p in xlp_elems:
-            xlt=p.text
-            src=p.find_element_by_xpath(xlsrc_xpath).text
-            xld+=f"##:<source>{src}<source><translation>{xlt.replace(src,'')}<translation>\n"
+            try:
+                xlt=p.text
+                src=p.find_element_by_xpath(xlsrc_xpath).text
+                xld+=f"##:<source>{src}<source><translation>{xlt.replace(src,'')}<translation>\n"
+            except NoSuchElementException:
+                with open(log_txt,"a+") as f:
+                    f.write(f"Translation element incomplete at {driver.current_url} at {xlt}\n")
         TR.append(xld)
+
+
+def save_surah(i):
+    global FILES,TEXTS,TZ,TB,TR
+    #Install Driver
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
+    # get sura
+    url = 'https://www.hadithbd.com/quran/tafsir/?sura=' + str(i)
+    driver.get(url)
+    # sura path
+    spath=create_dir(save_dir,str(i))
+    csv_path=os.path.join(spath,"data.csv")
+    save_data(driver,spath)
+    # check if next page exist    
+    while check(driver,next_xpath):
+        next_link=driver.find_element_by_xpath(next_xpath)
+        next_link.click()
+        waitSomeTime()
+        print(driver.current_url)
+        save_data(driver,spath)
+        
+    df=pd.DataFrame({"filepath":FILES,
+                    "text":TEXTS,
+                    "tafsir-zakariya":TZ,
+                    "tafsir-bayan":TB,
+                    "translation":TR})
+    df.to_csv(csv_path,index=False)
+    FILES=[]
+    TEXTS=[]
+    TZ=[]
+    TB=[]
+    TR=[]
+    driver.close()
+
+
 
 if __name__=="__main__":
 
     #---------------------------------------------------
-    for i in tqdm(range(1,115)):
-        # get sura
-        url = 'https://www.hadithbd.com/quran/tafsir/?sura=' + str(i)
-        driver.get(url)
-        # sura path
-        spath=create_dir(os.getcwd(),str(i))
-        csv_path=os.path.join(spath,"data.csv")
-        save_data(driver,spath)
-        # check if next page exist    
-        while check(driver,next_xpath):
-            next_link=driver.find_element_by_xpath(next_xpath)
-            next_link.click()
-            waitSomeTime()
-            print(driver.current_url)
-            save_data(driver,spath)
-            
-        df=pd.DataFrame({"filepath":FILES,
-                        "text":TEXTS,
-                        "tafsir-zakariya":TZ,
-                        "tafsir-bayan":TB,
-                        "translation":TR})
-        df.to_csv(csv_path,index=False)
-        FILES=[]
-        TEXTS=[]
-        TZ=[]
-        TB=[]
-        TR=[]
-    driver.close()
+    
+    for _start in tqdm(range(1,115,batch)):
+        _end=_start+batch
+        if _end>114:_end=115
+        process_list=[]
+        for idx in tqdm(range(_start,_end)):
+            p =  Process(target= save_surah, args = [idx])
+            p.start()
+            process_list.append(p)
+        for process in process_list:
+            process.join()
 
+        
