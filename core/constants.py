@@ -36,3 +36,4 @@ class xpaths:
     chapter     ='.//div[@class="chapter hidden-print"]'
     validity    ='.//span[@class="label validity"]'
     extra_note  ='.//div[@class="row hadis-extra note"]'
+    chapter_name='.//th[@class="tg-yw42"]'

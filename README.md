@@ -26,6 +26,7 @@ Gnome       : 3.36.8
 * click explanation link
 * get preface info:
     * chapter
+    * chapter-name
     * preface text
 * main:
     * arabic
@@ -46,6 +47,7 @@ Gnome       : 3.36.8
         "validity": "সহিহ হাদিস"
     },
     "meta": {
+        "chapter-name": "ওহীর সূচনা অধ্যায়",
         "header": "১/১. অধ্যায়ঃ",
         "preface": [
             "আল্লাহ্‌র রসূল (সাল্লাল্লাহু 'আলাইহি ওয়া সাল্লাম)- এর প্রতি কীভাবে ওহী [১] শুরু হয়েছিলো।",
@@ -58,23 +60,56 @@ Gnome       : 3.36.8
 # QUICK LINKS:
 * killing chrome headless: ```pkill -f "(chrome)?(--headless)"```
 
-# TODO
-- [x] multiprocessing
-- [ ] regex and line sep division
-
 # Execution:
-* edit **scrape.py**
 
-* bukhari example:
-    * url="http://ihadis.com/books/bukhari/hadis"
-    * start=1
-    * end=7275
-    * save_path="../../"
-    * iden="bukhari"
-* muslim example:
-    * url="http://ihadis.com/books/muslim/hadis"
-    * start=1
-    * end=7500
-    * save_path="../../"
-    * iden="muslim"
 * run: ```python scrape.py```
+
+```python
+usage: ihadith website scrapper [-h] [--start START] [--batch BATCH] iden end save_path
+
+positional arguments:
+  iden           book name from the website
+  end            end of hadith no to sracpe from the book
+  save_path      path to save the json data [the provided iden will be used to create a folder]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --start START  start of hadith no to scrape from the book
+  --batch BATCH  batch number for multiprocessing [1 process will be allocated for n number of hadiths]
+```
+* **iden** and **end** variables for collected data is listed as follows
+
+|book|iden|end| 
+|:---:|:---:|:---:| 
+|সহিহ বুখারী|bukhari|7275| 
+|সহিহ মুসলিম|muslim| 7500| 
+|সুনানে আন-নাসায়ী|nasayi|5758|
+|সুনানে আবু দাউদ|abi-dawud|5274|
+|জামে' আত-তিরমিজি|tirmidi|3956|
+|সুনানে ইবনে মাজাহ|ibn-majah|4341|
+||||
+|মুয়াত্তা ইমাম মালিক|muatta-malik|1832|
+|রিয়াদুস সলেহিন|riadus-saalehin|1905|
+|বুলুগুল মারাম|bulugul-maram|1568|
+|আল লু'লু ওয়াল মারজান|al-lulu-wal-marjan|1906|
+|হাদিস সম্ভার|hadis-somvar|2013|
+|সিলসিলা সহিহা|silsila-sahiha|60|
+|জাল জয়িফ হাদিস সিরিজ|jal-daif-hadis-serise|102|
+|মিশকাতুল মাসাবিহ|mishkatul-masabih|2758|
+|৪০ হাদিস|40-hadis|42|
+|আদাবুল মুফরাদ|adabul-mufrad|1336|
+|জুজ'উল রাফায়েল ইয়াদাইন|juj-ul-rafaul-yadain|56|
+|সহিহ হাদিসে কুদসি|sahih-hadise-kudsi|163|
+|১০০ সুসাব্যস্ত হাদিস|100-mashhur-hadis|101|
+|মিশকাতে জয়িফ হাদিস |daif-hadis-in-mishkat|106|
+|শামায়েলে তিরমিযি|shamayele-tirmidi|320|
+|সহিহ তারগিব ওয়াত তাহরিব|targib-wat-tahrib|200|
+|সহিহ ফাযায়েলে আমল |sahih-fajayele-amal|151|
+|ঊপদেশ|upodesh|234|
+|রমযান বিষয়ে জাল ও দুর্বল হাদিসসমূহ|romjaner-durbol-hadis|36|
+||||
+|মুসনাদে আহমাদ|||
+|জুজ'উল কিরাত|||
+|সুনান আদ-দারিমী|||
+|তাহাবী শরিফ|||
+|সুনান দারাকুতনী |||

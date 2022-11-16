@@ -51,6 +51,8 @@ def save_data_url(url,driver,json_path):
     _dict["extra-note"]=get_text(driver,xpaths.extra_note)
     # header
     meta={}
+    # chapter name
+    meta["chapter-name"]=get_text(driver,xpaths.chapter_name)
     if check(driver,xpaths.chapter):
         link=driver.find_element_by_xpath(xpaths.chapter)
         header=link.find_element_by_xpath("h3")
@@ -60,9 +62,14 @@ def save_data_url(url,driver,json_path):
             pref_texts.append(elem.text)
         meta["header"]=header.text
         meta["preface"]=pref_texts
+        # clean doubles
+        for idx,pref in enumerate(meta["preface"]):
+            if pref==meta["header"]:meta["preface"][idx]=None
+        
     else:
         meta["header"]=None
         meta["preface"]=None
+    
     main["meta"]=meta
     main["data"]=_dict
     with open(json_path, 'w') as fp:

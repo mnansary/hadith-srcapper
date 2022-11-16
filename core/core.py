@@ -41,15 +41,10 @@ def launchBrowser(Debug=False):
     options.add_argument("--mute-audio")
     if not Debug:
         options.add_argument("--headless")
-    
-    
     try:
         driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options) #--this is kept for local testing
-        
     except Exception as e:
         print(e)
-        exit(1)
-    
     return driver
 
 
